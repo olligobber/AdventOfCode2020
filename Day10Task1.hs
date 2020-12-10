@@ -4,7 +4,8 @@ main :: IO ()
 main = interact $
 	show .
 	((*) <$> length . filter (==1) <*> length . filter (==3)) .
-	(\x -> zipWith (-) (x++[last x + 3]) (0:x)) .
+	(3:) .
+	(zipWith (-) <$> id <*> (0:)) .
 	sort .
 	fmap read .
 	lines
