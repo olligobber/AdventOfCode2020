@@ -3,6 +3,8 @@ import qualified Data.Map as M
 import Control.Monad (guard)
 import Data.Foldable (fold, toList)
 import Data.Maybe (isJust)
+import Data.Vector ((*^))
+import Data.AdditiveGroup ((^+^))
 
 data Seat = None | Empty | Filled deriving Eq
 
@@ -13,22 +15,12 @@ instance Semigroup Seat where
 instance Monoid Seat where
 	mempty = None
 
-scale :: (Int,Int) -> Int -> (Int,Int)
-scale (x,y) a = (a*x,a*y)
-
-add :: (Int, Int) -> (Int, Int) -> (Int,Int)
-add (x1,y1) (x2,y2) = (x1+x2,y1+y2)
-
 directions :: [(Int, Int)]
-directions = do
-	dx <- [-1..1]
-	dy <- [-1..1]
-	guard $ (dx,dy) /= (0,0)
-	return (dx,dy)
+directions = filter (/= (0,0)) $ zip [-1..1] [-1..1]
 
 occupiedSight :: Map (Int,Int) Seat -> (Int,Int) -> (Int,Int) -> Bool
 occupiedSight m start go = (==Filled) $ fold $ foldMap toList $
-	takeWhile isJust $ flip M.lookup m . add start . scale go <$> [1..]
+	takeWhile isJust $ flip M.lookup m . (^+^ start) . (*^ go) <$> [1..]
 
 -- Determine if a seat is occupied on the next round
 isOccupied :: Map (Int, Int) Seat -> (Int, Int) -> Seat
