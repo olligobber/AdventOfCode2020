@@ -3,7 +3,7 @@ import qualified Data.Map as M
 import Control.Monad (guard)
 import Data.Foldable (fold, toList)
 import Data.Maybe (isJust)
-import Data.Vector ((*^))
+import Data.VectorSpace ((*^))
 import Data.AdditiveGroup ((^+^))
 
 data Seat = None | Empty | Filled deriving Eq
@@ -16,7 +16,7 @@ instance Monoid Seat where
 	mempty = None
 
 directions :: [(Int, Int)]
-directions = filter (/= (0,0)) $ zip [-1..1] [-1..1]
+directions = filter (/= (0,0)) $ (,) <$> [-1..1] <*> [-1..1]
 
 occupiedSight :: Map (Int,Int) Seat -> (Int,Int) -> (Int,Int) -> Bool
 occupiedSight m start go = (==Filled) $ fold $ foldMap toList $
