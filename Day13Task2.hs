@@ -2,33 +2,21 @@ import Data.List.Split (splitOn)
 import Text.Read (readMaybe)
 import Data.Foldable (toList)
 import Data.Function (on)
+import Control.Monad.Extra (loop)
 
--- Stolen from rosetta code
+-- A step of the extended euclidean algorithm, given the two values in mod row
+-- and the two values in the accumulator row, returning the result of mod
+-- inverse if it exists or the next values for the algorithm
+eeaStep :: (Integer, Integer, Integer, Integer) ->
+    Either (Integer, Integer, Integer, Integer) (Maybe Integer)
+eeaStep (a, b, da, db)
+    | b == 1 = Right $ Just db
+    | b <= 0 = Right Nothing
+    | otherwise = Left (b, a `mod` b, db, -(a `div` b) * db + da)
 
--- Given a and m, return Just x such that ax = 1 mod m.
--- If there is no such x return Nothing.
+-- Inverts the first mod the second
 modInv :: Integer -> Integer -> Maybe Integer
-modInv a m
-  | 1 == g = Just (mkPos i)
-  | otherwise = Nothing
-  where
-    (i, _, g) = gcdExt a m
-    mkPos x
-      | x < 0 = x + m
-      | otherwise = x
-
--- Extended Euclidean algorithm.
--- Given non-negative a and b, return x, y and g
--- such that ax + by = g, where g = gcd(a,b).
--- Note that x or y may be negative.
-gcdExt :: Integer -> Integer -> (Integer, Integer, Integer)
-gcdExt a 0 = (1, 0, a)
-gcdExt a b =
-  let (q, r) = a `quotRem` b
-      (s, t, g) = gcdExt b r
-  in (t, s - q * t, g)
-
--- End stolen code
+modInv a b = loop eeaStep (a,b,1,0)
 
 data ArithmeticSequence =
 	ArithmeticSequence Integer Integer |
