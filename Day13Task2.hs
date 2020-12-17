@@ -8,11 +8,11 @@ import Control.Monad.Extra (loop)
 -- and the two values in the accumulator row, returning the result of mod
 -- inverse if it exists or the next values for the algorithm
 eeaStep :: (Integer, Integer, Integer, Integer) ->
-    Either (Integer, Integer, Integer, Integer) (Maybe Integer)
+	Either (Integer, Integer, Integer, Integer) (Maybe Integer)
 eeaStep (a, b, da, db)
-    | b == 1 = Right $ Just db
-    | b <= 0 = Right Nothing
-    | otherwise = Left (b, a `mod` b, db, -(a `div` b) * db + da)
+	| b == 1 = Right $ Just db
+	| b <= 0 = Right Nothing
+	| otherwise = Left (b, a `mod` b, db, -(a `div` b) * db + da)
 
 -- Inverts the first mod the second
 modInv :: Integer -> Integer -> Maybe Integer
@@ -38,7 +38,7 @@ instance Monoid ArithmeticSequence where
 
 findFirstPositive :: ArithmeticSequence -> Maybe Integer
 findFirstPositive Empty = Nothing
-findFirstPositive (ArithmeticSequence a b) =Just (a `mod` b)
+findFirstPositive (ArithmeticSequence a b) = Just (a `mod` b)
 
 busToArithmetic :: (Integer, Integer) -> ArithmeticSequence
 busToArithmetic (offset, skip) = ArithmeticSequence (-offset) skip
