@@ -53,4 +53,4 @@ main = do
 		splitOn "," <$>
 			getLine
 		:: IO [(Integer,Integer)]
-	print $ findFirstPositive $ foldMap (busToArithmetic) buses
+	print $ findFirstPositive $ foldMap busToArithmetic buses
